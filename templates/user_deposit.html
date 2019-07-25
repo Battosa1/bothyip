@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<label>
+    User id
+</label>
+<input id="user_id">
+<label>
+    Sum
+</label>
+<input id="amount">
+<button type="button" onclick="increaseDeposit()">Top up</button>
+<script>
+    function increaseDeposit() {
+        var user_id = document.getElementById('user_id').value
+        var amount = document.getElementById('amount').value
+
+        $.ajax({
+          type: "POST",
+          url: "/increase_user_deposit",
+          dataType: 'text',
+          contentType: 'application/json',
+          data: JSON.stringify({
+                "amount": amount,
+                "user_id": user_id
+          }),
+          success: function(msg) {
+                alert("Success");
+                window.location.reload();
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert('Mistake: ' + XMLHttpRequest.responseText);
+          }
+        });
+
+    }
+</script>
+</body>
+</html>
+{% endblock %}

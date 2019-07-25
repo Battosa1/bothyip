@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+<table style="max-width: 1500px; margin: auto;">
+    <tr>
+        <td style="padding:0 15px 0 15px;">
+            <b>
+                From
+            </b>
+        </td>
+        <td style="padding:0 15px 0 15px;">
+            <b>
+                Amount
+            </b>
+        </td>
+        <td style="padding:0 15px 0 15px;">
+            <b>
+                Date and time
+            </b>
+        </td>
+    </tr>
+    <tr>
+    {% for top_up in lost_top_ups %}
+        <td style="padding:0 15px 0 15px;">{{ top_up.from_wallet }}</td>
+        <td style="padding:0 15px 0 15px;">{{ top_up.amount }}</td>
+        <td style="padding:0 15px 0 15px;">{{ top_up.created_at.strftime('%Y %B %d %H:%M') }}</td>
+        <td>
+            <label>User id</label>
+            <input id="user_id">
+            <button type="button" onclick="receivedTopUp({{top_up.id}})">Enroll</button>
+        </td>
+        <td>
+            <button type="button" onclick="deleteTopUp({{top_up.id}})">Delete</button>
+        </td>
+    </tr>
+  {% endfor %}
+</table>
+<script>
+
+    function deleteTopUp(id) {
+        $.ajax({
+          type: "DELETE",
+          url: "/delete_top_up",
+          dataType: 'text',
+          contentType: 'application/json',
+          data: JSON.stringify({
+                "id": id,
+            }),
+          success: function(msg) {
+                alert("Success");
+                window.location.reload();
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert('Mistake: ' + XMLHttpRequest.responseText);
+          }
+        });
+    }
+
+    function receivedTopUp(id) {
+        var user_id = document.getElementById('user_id').value
+        $.ajax({
+          type: "POST",
+          url: "/received_top_up",
+          dataType: 'text',
+          contentType: 'application/json',
+          data: JSON.stringify({
+                "id": id,
+                "user_id": user_id
+            }),
+          success: function(msg) {
+                alert("Success");
+                window.location.reload();
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert('Mistake: ' + XMLHttpRequest.responseText);
+          }
+        });
+    }
+</script>
+</body>
+</html>
+{% endblock %}
